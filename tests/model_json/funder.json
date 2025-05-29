@@ -1,0 +1,120 @@
+{
+    "id": "https://openalex.org/F4320332161",
+    "display_name": "National Institutes of Health",
+    "alternate_titles": [
+        "US National Institutes of Health",
+        "Institutos Nacionales de la Salud",
+        "NIH"
+    ],
+    "country_code": "US",
+    "description": "US government medical research agency",
+    "homepage_url": "http://www.nih.gov",
+    "image_url": "https://commons.wikimedia.org/w/index.php?title=Special:Redirect/file/NIH 2013 logo vertical.svg",
+    "image_thumbnail_url": "https://commons.wikimedia.org/w/index.php?title=Special:Redirect/file/NIH 2013 logo vertical.svg&width=300",
+    "grants_count": 272565,
+    "works_count": 385181,
+    "cited_by_count": 15142918,
+    "summary_stats": {
+        "2yr_mean_citedness": 5.3230547290595975,
+        "h_index": 855,
+        "i10_index": 232869
+    },
+    "ids": {
+        "openalex": "https://openalex.org/F4320332161",
+        "ror": "https://ror.org/01cwqze88",
+        "wikidata": "https://www.wikidata.org/entity/Q390551",
+        "crossref": "100000002",
+        "doi": "https://doi.org/10.13039/100000002"
+    },
+    "counts_by_year": [
+        {
+            "year": 2025,
+            "works_count": 9334,
+            "cited_by_count": 766849
+        },
+        {
+            "year": 2024,
+            "works_count": 29890,
+            "cited_by_count": 2206567
+        },
+        {
+            "year": 2023,
+            "works_count": 31435,
+            "cited_by_count": 2145047
+        },
+        {
+            "year": 2022,
+            "works_count": 35112,
+            "cited_by_count": 2035122
+        },
+        {
+            "year": 2021,
+            "works_count": 40674,
+            "cited_by_count": 1921427
+        },
+        {
+            "year": 2020,
+            "works_count": 37647,
+            "cited_by_count": 1523046
+        },
+        {
+            "year": 2019,
+            "works_count": 34296,
+            "cited_by_count": 1049260
+        },
+        {
+            "year": 2018,
+            "works_count": 32896,
+            "cited_by_count": 775834
+        },
+        {
+            "year": 2017,
+            "works_count": 29488,
+            "cited_by_count": 573396
+        },
+        {
+            "year": 2016,
+            "works_count": 25354,
+            "cited_by_count": 413056
+        },
+        {
+            "year": 2015,
+            "works_count": 19154,
+            "cited_by_count": 301873
+        },
+        {
+            "year": 2014,
+            "works_count": 14863,
+            "cited_by_count": 228290
+        },
+        {
+            "year": 2013,
+            "works_count": 6257,
+            "cited_by_count": 192489
+        },
+        {
+            "year": 2012,
+            "works_count": 5734,
+            "cited_by_count": 164371
+        }
+    ],
+    "roles": [
+        {
+            "role": "publisher",
+            "id": "https://openalex.org/P4310316754",
+            "works_count": 38485
+        },
+        {
+            "role": "funder",
+            "id": "https://openalex.org/F4320332161",
+            "works_count": 385181
+        },
+        {
+            "role": "institution",
+            "id": "https://openalex.org/I1299303238",
+            "works_count": 280316
+        }
+    ],
+    "updated_date": "2025-05-27T12:38:49.941365",
+    "created_date": "2023-02-13"
+}
