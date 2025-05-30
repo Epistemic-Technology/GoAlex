@@ -14,13 +14,16 @@ type Publisher struct {
 		ROR       string `json:"ror"`
 		Wikipedia string `json:"wikipedia"`
 	} `json:"ids"`
-	ImageThumbnailURL string       `json:"image_thumbnail_url"`
-	ImageURL          string       `json:"image_url"`
-	Lineage           []string     `json:"lineage"`
-	ParentPublisher   string       `json:"parent_publisher"`
-	Roles             []Role       `json:"roles"`
-	SourceAPIURL      string       `json:"source_api_url"`
-	SummaryStats      SummaryStats `json:"summary_stats"`
-	UpdatedDate       string       `json:"updated_date"`
-	WorksCount        int          `json:"works_count"`
+	ImageThumbnailURL string   `json:"image_thumbnail_url"`
+	ImageURL          string   `json:"image_url"`
+	Lineage           []string `json:"lineage"`
+	ParentPublisher   struct {
+		ID          string `json:"id"`
+		DisplayName string `json:"display_name"`
+	} `json:"parent_publisher"`
+	Roles        []Role       `json:"roles"`
+	SourceAPIURL string       `json:"source_api_url"`
+	SummaryStats SummaryStats `json:"summary_stats"`
+	UpdatedDate  string       `json:"updated_date"`
+	WorksCount   int          `json:"works_count"`
 }

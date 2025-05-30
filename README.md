@@ -17,9 +17,9 @@ As of now, the library is in its early stages. The following features are planne
 
 - [x] Basic data structures.
 - [x] Polite pool support.
-- [ ] Basic API client.
+- [x] Basic API client.
 - [ ] Authentication support.
-- [ ] Pagination support.
+- [x] Pagination support.
 - [ ] Filtering and searching.
 - [ ] Sorting, selecting and sampling.
 - [ ] Random results.
@@ -48,28 +48,59 @@ import (
 func main() {
     // Set a email to use polite pool.
     // See: https://docs.openalex.org/how-to-use-the-api/rate-limits-and-authentication#the-polite-pool
-    client := goalex.NewClient(goalex.WithMailto("you@example.com"))
+    client := goalex.NewClient(goalex.PolitePool("you@example.com"))
 
     // or use common pool.
     // client := goalex.NewClient()
 
-    params := &goalex.QueryParams{
-        Pagination: &goalex.PaginationParams{
-            Page:    1,
-            PerPage: 20,
-        },
-    }
-    // Example: List works by query
-    works, err := client.Works().List(params)
+    // Example: List works by default pagination(page=1, per_page=25)
+    works, err := client.Works().List()
+
     if err != nil {
         fmt.Printf("Error fetching works: %v\n", err)
         return
     }
 
-    // Print the results
+    // If you want to get the paginated response with metadata
+    worksWithMeta, err := client.Works().ListWithMeta()
+
+    if err != nil {
+        fmt.Printf("Error fetching works: %v\n", err)
+        return
+    }
+
+    // Get results and metadata
+    results, meta := worksWithMeta.Results, worksWithMeta.Meta
+
+    // If you want to use custom pagination, you can do it like this:
+    worksPaged, err := client.Works().
+        Page(1).     // Set the page number
+        PerPage(10). // Set the number of items per page
+        List()
+
+    if err != nil {
+        fmt.Printf("Error fetching works: %v\n", err)
+        return
+    }
+
+    // Print the works
     for _, work := range works {
         workJSON, _ := json.MarshalIndent(work, "", "  ")
-        fmt.Println(string(workJSON))
+        fmt.Println("Works:", string(workJSON))
+    }
+
+    // Print the works with metadata
+    for _, work := range results {
+        workJSON, _ := json.MarshalIndent(work, "", "  ")
+        fmt.Println("Work results from `ListWithMeta()`:", string(workJSON))
+    }
+    // Print the metadata
+    fmt.Printf("Metadata: %+v\n", meta)
+
+    // Print the paginated works
+    for _, work := range worksPaged {
+        workJSON, _ := json.MarshalIndent(work, "", "  ")
+        fmt.Println("Works with custom pagination:", string(workJSON))
     }
 }
 ```

@@ -1,4 +1,4 @@
-package client
+package core
 
 import (
 	"encoding/json"
@@ -15,7 +15,7 @@ type Client struct {
 
 type Option func(*Client)
 
-func WithMailto(email string) Option {
+func PolitePool(email string) Option {
 	return func(c *Client) {
 		c.MailTo = email
 	}

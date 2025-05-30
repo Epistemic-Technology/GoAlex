@@ -15,7 +15,7 @@ type CountsByYear struct {
 
 type GEO struct {
 	City           string  `json:"city"`
-	GeonamesCityID int     `json:"geonames_city_id"`
+	GeonamesCityID string  `json:"geonames_city_id"`
 	Region         string  `json:"region"`
 	CountryCode    string  `json:"country_code"`
 	Country        string  `json:"country"`

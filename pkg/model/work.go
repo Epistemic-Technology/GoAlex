@@ -118,11 +118,3 @@ type Work struct {
 	TypeCrossref string           `json:"type_crossref"`
 	UpdatedDate  string           `json:"updated_date"`
 }
-
-type WorksResponse struct {
-	Results []Work `json:"results"`
-}
-
-func (r WorksResponse) GetResults() []Work {
-	return r.Results
-}
