@@ -1,7 +1,7 @@
 package core
 
 import (
-	"github.com/Sunhill666/goalex/pkg/model"
+	"github.com/Sunhill666/goalex/internal/model"
 )
 
 type QueryBuilder[T any] struct {

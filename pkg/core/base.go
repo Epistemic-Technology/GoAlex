@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/url"
 
-	"github.com/Sunhill666/goalex/pkg/model"
+	"github.com/Sunhill666/goalex/internal/model"
 )
 
 
