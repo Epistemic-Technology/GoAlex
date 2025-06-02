@@ -1,0 +1,9 @@
+project_name: goalex
+
+version: 2
+
+builds:
+  - skip: true
+
+changelog:
+  disable: true
