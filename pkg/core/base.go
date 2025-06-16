@@ -23,6 +23,7 @@ func ListEntities[T any](
 	}
 
 	var resp model.PaginatedResponse[T]
+	fmt.Println("Requesting URL:", urlWithParams)
 	err := c.Get(urlWithParams, &resp)
 	if err != nil {
 		return nil, err
