@@ -27,7 +27,7 @@ func (q *QueryBuilder[T]) PerPage(pp int) *QueryBuilder[T] {
 	return q
 }
 
-func (q *QueryBuilder[T]) FilterField(field string, value any) *QueryBuilder[T] {
+func (q *QueryBuilder[T]) Filter(field string, value any) *QueryBuilder[T] {
 	if q.params.Filter == nil {
 		q.params.Filter = make(map[string]any)
 	}
@@ -35,11 +35,30 @@ func (q *QueryBuilder[T]) FilterField(field string, value any) *QueryBuilder[T] 
 	return q
 }
 
-func (q *QueryBuilder[T]) Filter(filters map[string]any) *QueryBuilder[T] {
+func (q *QueryBuilder[T]) FilterMap(filters map[string]any) *QueryBuilder[T] {
 	if q.params.Filter == nil {
 		q.params.Filter = make(map[string]any)
 	}
 	maps.Copy(q.params.Filter, filters)
+	return q
+}
+
+func (q *QueryBuilder[T]) Search(query string) *QueryBuilder[T] {
+	q.params.Search = query
+	return q
+}
+
+func (q *QueryBuilder[T]) SearchFilter(search_filters map[string]string, no_stem bool) *QueryBuilder[T] {
+	if q.params.Filter == nil {
+		q.params.Filter = make(map[string]any)
+	}
+	for k, v := range search_filters {
+		newKey := k + ".search"
+		if no_stem {
+			newKey += ".no_stem"
+		}
+		q.params.Filter[newKey] = v
+	}
 	return q
 }
 

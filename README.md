@@ -20,7 +20,7 @@ As of now, the library is in its early stages. The following features are planne
 - [x] Basic API client.
 - [ ] Authentication support.
 - [x] Pagination support.
-- [ ] Filtering and searching.
+- [x] Filtering and searching.
 - [ ] Sorting, selecting and sampling.
 - [ ] Random results.
 - [ ] N-gram support.
@@ -214,9 +214,11 @@ func main() {
 
 ### Filtering and Searching
 
-The library supports filtering and searching for works, authors, sources, etc. You can use the `Filter()` and `Search()` methods to apply filters and search queries.
+The library supports filtering and searching for works, authors, sources, etc.
 
 #### Filter Example
+
+You can filter works by multiple conditions using the `FilterMap()` method, and filter by a single condition using the `Filter()` method. The following example demonstrates how to filter works by country code and authors count.
 
 ```go
 package main
@@ -234,7 +236,7 @@ func main() {
     client := goalex.NewClient(goalex.PolitePool("you@example.com"))
 
     // Fetch a list of works with filtering with multiple conditions.
-    works, err := client.Works().Filter(map[string]any{
+    works, err := client.Works().FilterMap(map[string]any{
         "institutions.country_code": "fr+gb",
         "authors_count":             ">2",
     }).List()
@@ -251,7 +253,7 @@ func main() {
     }
 
     // Or filter with a single condition.
-    works, err := client.Works().FilterField("institutions.country_code", "fr+gb").List()
+    works, err = client.Works().Filter("institutions.country_code", "fr+gb").List()
 
     if err != nil {
         fmt.Printf("Error fetching works: %v\n", err)
@@ -262,6 +264,78 @@ func main() {
     for _, work := range works {
         workJSON, _ := json.MarshalIndent(work, "", "  ")
         fmt.Println("Works with single filter condition:", string(workJSON))
+    }
+}
+```
+
+#### Search Example
+
+You can search for works using the `Search()` method. The following example demonstrates how to search for works with a query.
+
+```go
+package main
+
+import (
+    "encoding/json"
+    "fmt"
+
+    "github.com/Sunhill666/goalex"
+)
+
+// Example: Search works
+func main() {
+    // Create a new client with polite pool
+    client := goalex.NewClient(goalex.PolitePool("you@example.com"))
+    // Search for works with a query
+    works, err := client.Works().Search("machine learning").List()
+    // Or, if you want to exact search
+    // works, err = client.Works().Search("\"machine learning\"").List()
+    if err != nil {
+        fmt.Printf("Error searching works: %v\n", err)
+        return
+    }
+
+    // Print the works
+    for _, work := range works {
+        workJSON, _ := json.MarshalIndent(work, "", "  ")
+        fmt.Println("Search results:", string(workJSON))
+    }
+}
+```
+
+#### Search Filter
+
+You can also combine search with filtering. The following example demonstrates how to search for works with a query and filter by country code.
+
+```go
+package main
+
+import (
+    "encoding/json"
+    "fmt"
+
+    "github.com/Sunhill666/goalex"
+)
+
+// Example: Search works with filter
+func main() {
+    // Create a new client with polite pool
+    client := goalex.NewClient(goalex.PolitePool("you@example.com"))
+
+    // Search for works with a query and filter by country code
+    works, err := client.Works().SearchFilter(map[string]string{
+        "display_name": "surgery",
+        "title":        "surgery",
+    }, true).List() // Search without stemming
+    if err != nil {
+        fmt.Printf("Error fetching works: %v\n", err)
+        return
+    }
+
+    // Print the works
+    for _, work := range works {
+        workJSON, _ := json.MarshalIndent(work, "", "  ")
+        fmt.Println("Works:", string(workJSON))
     }
 }
 ```
