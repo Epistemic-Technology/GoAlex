@@ -55,7 +55,9 @@ func (c *Client) Get(path string, out any) error {
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() {
+		_ = resp.Body.Close()
+	}()
 
 	return json.NewDecoder(resp.Body).Decode(out)
 }
