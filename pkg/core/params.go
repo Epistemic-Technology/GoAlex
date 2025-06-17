@@ -31,6 +31,7 @@ type QueryParams struct {
 	Pagination *PaginationParams
 	Filter     map[string]any
 	Search     string
+	Sort	   map[string]bool
 }
 
 func (q *QueryParams) ToQuery() url.Values {
@@ -53,6 +54,22 @@ func (q *QueryParams) ToQuery() url.Values {
 	}
 	if q.Search != "" {
 		query.Set("search", q.Search)
+	}
+	if q.Sort != nil {
+		var sb strings.Builder
+		first := true
+		for k, v := range q.Sort {
+			if !first {
+				sb.WriteString(",")
+			}
+			if v {
+				sb.WriteString(fmt.Sprintf("%s:desc", k))
+			} else {
+				sb.WriteString(k)
+			}
+			first = false
+		}
+		query.Set("sort", sb.String())
 	}
 	return query
 }
