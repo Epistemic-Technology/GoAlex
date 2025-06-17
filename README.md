@@ -18,7 +18,7 @@ As of now, the library is in its early stages. The following features are planne
 - [x] Basic data structures.
 - [x] Polite pool support.
 - [x] Basic API client.
-- [ ] Authentication support.
+- [x] Authentication support.
 - [x] Pagination support.
 - [x] Filtering and searching.
 - [ ] Sorting, selecting and sampling.
@@ -64,6 +64,21 @@ import "github.com/Sunhill666/goalex"
 func main() {
     // Create a new client with polite pool
     client := goalex.NewClient(goalex.PolitePool("you@example.com"))
+}
+```
+
+#### Authentication
+
+For OpenAlex premium users, you can use the `goalex.Auth` function to authenticate your client. This will allow you to access premium features and higher rate limits.
+
+```go
+package main
+
+import "github.com/Sunhill666/goalex"
+
+func main() {
+    // Create a new client with authentication
+    client := goalex.NewClient(goalex.Auth("your_api_key"))
 }
 ```
 

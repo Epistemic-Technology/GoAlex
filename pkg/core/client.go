@@ -11,6 +11,7 @@ type Client struct {
 	BaseURL    string
 	HTTPClient *http.Client
 	MailTo     string
+	Token      string
 }
 
 type Option func(*Client)
@@ -18,6 +19,12 @@ type Option func(*Client)
 func PolitePool(email string) Option {
 	return func(c *Client) {
 		c.MailTo = email
+	}
+}
+
+func Auth(token string) Option {
+	return func(c *Client) {
+		c.Token = token
 	}
 }
 
@@ -49,6 +56,10 @@ func (c *Client) Get(path string, out any) error {
 	if c.MailTo != "" {
 		q.Set("mailto", c.MailTo)
 	}
+	if c.Token != "" {
+		q.Set("api_key", c.Token)
+	}
+
 	u.RawQuery = q.Encode()
 
 	resp, err := c.HTTPClient.Get(u.String())
