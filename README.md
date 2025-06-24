@@ -411,6 +411,39 @@ func main() {
 }
 ```
 
+#### Select Example
+
+You can select specific fields from the results using the `Select()` method. The following example demonstrates how to select the ID, DOI, and display name of works.
+
+```go
+package main
+
+import (
+    "encoding/json"
+    "fmt"
+
+    "github.com/Sunhill666/goalex"
+)
+
+func main() {
+    // Create a new client with polite pool
+    client := goalex.NewClient(goalex.PolitePool("you@example.com"))
+
+    selectedWorks, err := client.Works().Select("id", "doi", "display_name").List()
+
+    if err != nil {
+        fmt.Printf("Error fetching works: %v\n", err)
+        return
+    }
+
+    // Print the works
+    for _, work := range selectedWorks {
+        workJSON, _ := json.MarshalIndent(work, "", "  ")
+        fmt.Println("Works:", string(workJSON))
+    }
+}
+```
+
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

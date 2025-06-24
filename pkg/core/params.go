@@ -2,9 +2,9 @@ package core
 
 import (
 	"fmt"
+	"maps"
 	"net/url"
 	"strings"
-	"maps"
 )
 
 type PaginationParams struct {
@@ -31,7 +31,8 @@ type QueryParams struct {
 	Pagination *PaginationParams
 	Filter     map[string]any
 	Search     string
-	Sort	   map[string]bool
+	Sort       map[string]bool
+	Select     []string
 }
 
 func (q *QueryParams) ToQuery() url.Values {
@@ -70,6 +71,9 @@ func (q *QueryParams) ToQuery() url.Values {
 			first = false
 		}
 		query.Set("sort", sb.String())
+	}
+	if q.Select != nil {
+		query.Set("select", strings.Join(q.Select, ","))
 	}
 	return query
 }

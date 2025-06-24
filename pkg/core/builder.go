@@ -78,6 +78,17 @@ func (q *QueryBuilder[T]) SortMap(sort map[string]bool) *QueryBuilder[T] {
 	return q
 }
 
+func (q *QueryBuilder[T]) Select(fields ...string) *QueryBuilder[T] {
+	if len(fields) == 0 {
+		return q
+	}
+	if q.params.Select == nil {
+		q.params.Select = make([]string, 0)
+	}
+	q.params.Select = append(q.params.Select, fields...)
+	return q
+}
+
 func (q *QueryBuilder[T]) Get(id string) (*T, error) {
 	return GetEntity[T](q.client, q.endpoint, id)
 }
