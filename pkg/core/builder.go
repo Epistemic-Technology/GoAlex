@@ -111,7 +111,7 @@ func (q *QueryBuilder[T]) GetRandom() (*T, error) {
 	return GetEntity[T](q.client, q.endpoint, "random")
 }
 
-func (q *QueryBuilder[T]) List() ([]T, error) {
+func (q *QueryBuilder[T]) List() ([]*T, error) {
 	resp, err := ListEntities[T](q.client, q.endpoint, q.params)
 	if err != nil {
 		return nil, err

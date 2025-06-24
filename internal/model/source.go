@@ -2,53 +2,54 @@ package model
 
 type Source struct {
 	DehydratedSource
-	AbbreviatedTitle string   `json:"abbreviated_title"`
-	AlternateTitles  []string `json:"alternate_titles"`
-	APCPrice         struct {
-		Price    int    `json:"price"`
-		Currency string `json:"currency"`
-	} `json:"apc_price"`
-	APCUSD       int            `json:"apc_usd"`
-	CitedByCount int            `json:"cited_by_count"`
-	CountryCode  string         `json:"country_code"`
-	CountsByYear []CountsByYear `json:"counts_by_year"`
-	CreatedDate  string         `json:"created_date"`
-	HomePageURL  string         `json:"homepage_url"`
-	IDs          struct {
-		Fatcat    string   `json:"fatcat"`
-		ISSN      []string `json:"issn"`
-		ISSNL     string   `json:"issn_l"`
-		MAG       string   `json:"mag"`
-		OpenAlex  string   `json:"openalex"`
-		Wikipedia string   `json:"wikipedia"`
-	} `json:"ids"`
-	Societies []struct {
-		URL          string `json:"url"`
-		Organization string `json:"organization"`
-	} `json:"societies"`
-	SummaryStats SummaryStats                 `json:"summary_stats"`
-	Topics       []TopicWithCount             `json:"topics"`
-	TopicShare   []TopicShare                 `json:"topic_share"`
-	UpdatedDate  string                       `json:"updated_date"`
-	WorksAPIURL  string                       `json:"works_api_url"`
-	WorksCount   int                          `json:"works_count"`
-	XConcepts    []DehydratedConceptWithScore `json:"x_concepts"`
+	AbbreviatedTitle string                        `json:"abbreviated_title,omitempty"`
+	AlternateTitles  []string                      `json:"alternate_titles,omitempty"`
+	APCPrice         *APCPrice                     `json:"apc_price,omitempty"`
+	APCUSD           int                           `json:"apc_usd,omitempty"`
+	CitedByCount     int                           `json:"cited_by_count,omitempty"`
+	CountryCode      string                        `json:"country_code,omitempty"`
+	CountsByYear     []*CountsByYear               `json:"counts_by_year,omitempty"`
+	CreatedDate      string                        `json:"created_date,omitempty"`
+	HomePageURL      string                        `json:"homepage_url,omitempty"`
+	IDs              *SourceIDs                    `json:"ids,omitempty"`
+	Societies        []*Societies                  `json:"societies,omitempty"`
+	SummaryStats     *SummaryStats                 `json:"summary_stats,omitempty"`
+	Topics           []*TopicWithCount             `json:"topics,omitempty"`
+	TopicShare       []*TopicShare                 `json:"topic_share,omitempty"`
+	UpdatedDate      string                        `json:"updated_date,omitempty"`
+	WorksAPIURL      string                        `json:"works_api_url,omitempty"`
+	WorksCount       int                           `json:"works_count,omitempty"`
+	XConcepts        []*DehydratedConceptWithScore `json:"x_concepts,omitempty"`
+}
+
+type SourceIDs struct {
+	Fatcat    string   `json:"fatcat,omitempty"`
+	ISSN      []string `json:"issn,omitempty"`
+	ISSNL     string   `json:"issn_l,omitempty"`
+	MAG       string   `json:"mag,omitempty"`
+	OpenAlex  string   `json:"openalex,omitempty"`
+	Wikipedia string   `json:"wikipedia,omitempty"`
+}
+
+type Societies struct {
+	URL          string `json:"url,omitempty"`
+	Organization string `json:"organization,omitempty"`
 }
 
 type DehydratedSource struct {
 	RepositorySource
-	IsCore   bool     `json:"is_core"`
-	IsInDOAJ bool     `json:"is_in_doaj"`
-	IsOA     bool     `json:"is_oa"`
-	ISSN     []string `json:"issn"`
-	ISSNL    string   `json:"issn_l"`
-	Type     string   `json:"type"`
+	IsCore   bool     `json:"is_core,omitempty"`
+	IsInDOAJ bool     `json:"is_in_doaj,omitempty"`
+	IsOA     bool     `json:"is_oa,omitempty"`
+	ISSN     []string `json:"issn,omitempty"`
+	ISSNL    string   `json:"issn_l,omitempty"`
+	Type     string   `json:"type,omitempty"`
 }
 
 type RepositorySource struct {
-	DisplayName             string   `json:"display_name"`
-	HostOrganization        string   `json:"host_organization"`
-	HostOrganizationLineage []string `json:"host_organization_lineage"`
-	HostOrganizationName    string   `json:"host_organization_name"`
-	ID                      string   `json:"id"`
+	DisplayName             string   `json:"display_name,omitempty"`
+	HostOrganization        string   `json:"host_organization,omitempty"`
+	HostOrganizationLineage []string `json:"host_organization_lineage,omitempty"`
+	HostOrganizationName    string   `json:"host_organization_name,omitempty"`
+	ID                      string   `json:"id,omitempty"`
 }
