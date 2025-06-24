@@ -18,11 +18,12 @@ As of now, the library is in its early stages. The following features are planne
 - [x] Basic data structures.
 - [x] Polite pool support.
 - [x] Basic API client.
-- [ ] Authentication support.
+- [x] Authentication support.
 - [x] Pagination support.
 - [x] Filtering and searching.
-- [ ] Sorting, selecting and sampling.
-- [ ] Random results.
+- [x] Sorting, selecting and sampling.
+- [ ] Random result.
+- [ ] Grouping support.
 - [ ] N-gram support.
 - [ ] Cursor pagination support.
 - [ ] Autocomplete support.
@@ -64,6 +65,21 @@ import "github.com/Sunhill666/goalex"
 func main() {
     // Create a new client with polite pool
     client := goalex.NewClient(goalex.PolitePool("you@example.com"))
+}
+```
+
+#### Authentication
+
+For OpenAlex premium users, you can use the `goalex.Auth` function to authenticate your client. This will allow you to access premium features and higher rate limits.
+
+```go
+package main
+
+import "github.com/Sunhill666/goalex"
+
+func main() {
+    // Create a new client with authentication
+    client := goalex.NewClient(goalex.Auth("your_api_key"))
 }
 ```
 
@@ -334,6 +350,128 @@ func main() {
 
     // Print the works
     for _, work := range works {
+        workJSON, _ := json.MarshalIndent(work, "", "  ")
+        fmt.Println("Works:", string(workJSON))
+    }
+}
+```
+
+### Sorting, Selecting and Sampling
+
+The library supports sorting, selecting, and sampling of works.
+
+#### Sort Example
+
+You can sort the results by multiple fields using the `SortMap()` method, or by a single field using the `Sort()` method. The following example demonstrates how to sort works by publication year and relevance score.
+
+```go
+package main
+
+import (
+    "encoding/json"
+    "fmt"
+
+    "github.com/Sunhill666/goalex"
+)
+
+// Example: Sort works
+func main() {
+    // Create a new client with polite pool
+    client := goalex.NewClient(goalex.PolitePool("you@example.com"))
+
+    // Fetch a list of works and sort them by publication year and relevance score
+    works, err := client.Works().SearchFilter(map[string]string{
+        "display_name": "bioplastics",
+    }, false).SortMap(map[string]bool{
+        "publication_year": true, // Descending order
+        "relevance_score":  true, // Descending order
+    }).List()
+    if err != nil {
+        fmt.Printf("Error fetching work: %v\n", err)
+        return
+    }
+
+    // Print the sorted works
+    for _, work := range works {
+        workJSON, _ := json.MarshalIndent(work, "", "  ")
+        fmt.Println("Sorted works:", string(workJSON))
+    }
+
+    // Or sort by a single field
+    works, err = client.Works().Sort("publication_year", true).List()
+    if err != nil {
+        fmt.Printf("Error fetching works: %v\n", err)
+        return
+    }
+
+    // Print the sorted works
+    for _, work := range works {
+        workJSON, _ := json.MarshalIndent(work, "", "  ")
+        fmt.Println("Sorted works by single field:", string(workJSON))
+    }
+}
+```
+
+#### Select Example
+
+You can select specific fields from the results using the `Select()` method. The following example demonstrates how to select the ID, DOI, and display name of works.
+
+```go
+package main
+
+import (
+    "encoding/json"
+    "fmt"
+
+    "github.com/Sunhill666/goalex"
+)
+
+func main() {
+    // Create a new client with polite pool
+    client := goalex.NewClient(goalex.PolitePool("you@example.com"))
+
+    selectedWorks, err := client.Works().Select("id", "doi", "display_name").List()
+
+    if err != nil {
+        fmt.Printf("Error fetching works: %v\n", err)
+        return
+    }
+
+    // Print the works
+    for _, work := range selectedWorks {
+        workJSON, _ := json.MarshalIndent(work, "", "  ")
+        fmt.Println("Works:", string(workJSON))
+    }
+}
+```
+
+#### Sample Example
+
+You can sample a specific number of works using the `Sample()` method. And you can also set a seed for reproducibility using the `Seed()` method. The following example demonstrates how to sample 2 works with a seed of 42.
+
+```go
+package main
+
+import (
+    "encoding/json"
+    "fmt"
+
+    "github.com/Sunhill666/goalex"
+)
+
+func main() {
+    // Create a new client with polite pool
+    client := goalex.NewClient(goalex.PolitePool("you@example.com"))
+
+    sampleWorks, err := client.Works().Sample(2).Seed(42).List()
+
+    if err != nil {
+        fmt.Printf("Error fetching works: %v\n", err)
+        return
+    }
+
+    // Print the works
+    for _, work := range sampleWorks {
         workJSON, _ := json.MarshalIndent(work, "", "  ")
         fmt.Println("Works:", string(workJSON))
     }

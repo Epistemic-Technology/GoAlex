@@ -2,9 +2,9 @@ package core
 
 import (
 	"fmt"
+	"maps"
 	"net/url"
 	"strings"
-	"maps"
 )
 
 type PaginationParams struct {
@@ -31,6 +31,10 @@ type QueryParams struct {
 	Pagination *PaginationParams
 	Filter     map[string]any
 	Search     string
+	Sort       map[string]bool
+	Select     []string
+	Sample     int
+	Seed       int
 }
 
 func (q *QueryParams) ToQuery() url.Values {
@@ -53,6 +57,31 @@ func (q *QueryParams) ToQuery() url.Values {
 	}
 	if q.Search != "" {
 		query.Set("search", q.Search)
+	}
+	if q.Sort != nil {
+		var sb strings.Builder
+		first := true
+		for k, v := range q.Sort {
+			if !first {
+				sb.WriteString(",")
+			}
+			if v {
+				sb.WriteString(fmt.Sprintf("%s:desc", k))
+			} else {
+				sb.WriteString(k)
+			}
+			first = false
+		}
+		query.Set("sort", sb.String())
+	}
+	if q.Select != nil {
+		query.Set("select", strings.Join(q.Select, ","))
+	}
+	if q.Sample > 0 {
+		query.Set("sample", fmt.Sprintf("%d", q.Sample))
+	}
+	if q.Seed > 0 {
+		query.Set("seed", fmt.Sprintf("%d", q.Seed))
 	}
 	return query
 }

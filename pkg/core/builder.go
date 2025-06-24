@@ -62,6 +62,47 @@ func (q *QueryBuilder[T]) SearchFilter(search_filters map[string]string, no_stem
 	return q
 }
 
+func (q *QueryBuilder[T]) Sort(field string, desc bool) *QueryBuilder[T] {
+	if q.params.Sort == nil {
+		q.params.Sort = make(map[string]bool)
+	}
+	q.params.Sort[field] = desc
+	return q
+}
+
+func (q *QueryBuilder[T]) SortMap(sort map[string]bool) *QueryBuilder[T] {
+	if q.params.Sort == nil {
+		q.params.Sort = make(map[string]bool)
+	}
+	maps.Copy(q.params.Sort, sort)
+	return q
+}
+
+func (q *QueryBuilder[T]) Select(fields ...string) *QueryBuilder[T] {
+	if len(fields) == 0 {
+		return q
+	}
+	if q.params.Select == nil {
+		q.params.Select = make([]string, 0)
+	}
+	q.params.Select = append(q.params.Select, fields...)
+	return q
+}
+
+func (q *QueryBuilder[T]) Sample(sample int) *QueryBuilder[T] {
+	if sample <= 0 {
+		return q
+	} else {
+		q.params.Sample = sample
+	}
+	return q
+}
+
+func (q *QueryBuilder[T]) Seed(seed int) *QueryBuilder[T] {
+	q.params.Seed = seed
+	return q
+}
+
 func (q *QueryBuilder[T]) Get(id string) (*T, error) {
 	return GetEntity[T](q.client, q.endpoint, id)
 }
