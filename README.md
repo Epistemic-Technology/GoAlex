@@ -21,8 +21,9 @@ As of now, the library is in its early stages. The following features are planne
 - [x] Authentication support.
 - [x] Pagination support.
 - [x] Filtering and searching.
-- [ ] Sorting, selecting and sampling.
-- [ ] Random results.
+- [x] Sorting, selecting and sampling.
+- [ ] Random result.
+- [ ] Grouping support.
 - [ ] N-gram support.
 - [ ] Cursor pagination support.
 - [ ] Autocomplete support.
@@ -438,6 +439,39 @@ func main() {
 
     // Print the works
     for _, work := range selectedWorks {
+        workJSON, _ := json.MarshalIndent(work, "", "  ")
+        fmt.Println("Works:", string(workJSON))
+    }
+}
+```
+
+#### Sample Example
+
+You can sample a specific number of works using the `Sample()` method. And you can also set a seed for reproducibility using the `Seed()` method. The following example demonstrates how to sample 2 works with a seed of 42.
+
+```go
+package main
+
+import (
+    "encoding/json"
+    "fmt"
+
+    "github.com/Sunhill666/goalex"
+)
+
+func main() {
+    // Create a new client with polite pool
+    client := goalex.NewClient(goalex.PolitePool("you@example.com"))
+
+    sampleWorks, err := client.Works().Sample(2).Seed(42).List()
+
+    if err != nil {
+        fmt.Printf("Error fetching works: %v\n", err)
+        return
+    }
+
+    // Print the works
+    for _, work := range sampleWorks {
         workJSON, _ := json.MarshalIndent(work, "", "  ")
         fmt.Println("Works:", string(workJSON))
     }

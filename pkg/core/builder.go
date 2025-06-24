@@ -89,6 +89,20 @@ func (q *QueryBuilder[T]) Select(fields ...string) *QueryBuilder[T] {
 	return q
 }
 
+func (q *QueryBuilder[T]) Sample(sample int) *QueryBuilder[T] {
+	if sample <= 0 {
+		return q
+	} else {
+		q.params.Sample = sample
+	}
+	return q
+}
+
+func (q *QueryBuilder[T]) Seed(seed int) *QueryBuilder[T] {
+	q.params.Seed = seed
+	return q
+}
+
 func (q *QueryBuilder[T]) Get(id string) (*T, error) {
 	return GetEntity[T](q.client, q.endpoint, id)
 }

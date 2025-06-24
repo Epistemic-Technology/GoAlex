@@ -33,6 +33,8 @@ type QueryParams struct {
 	Search     string
 	Sort       map[string]bool
 	Select     []string
+	Sample     int
+	Seed       int
 }
 
 func (q *QueryParams) ToQuery() url.Values {
@@ -74,6 +76,12 @@ func (q *QueryParams) ToQuery() url.Values {
 	}
 	if q.Select != nil {
 		query.Set("select", strings.Join(q.Select, ","))
+	}
+	if q.Sample > 0 {
+		query.Set("sample", fmt.Sprintf("%d", q.Sample))
+	}
+	if q.Seed > 0 {
+		query.Set("seed", fmt.Sprintf("%d", q.Seed))
 	}
 	return query
 }
