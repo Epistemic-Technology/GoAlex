@@ -22,7 +22,7 @@ As of now, the library is in its early stages. The following features are planne
 - [x] Pagination support.
 - [x] Filtering and searching.
 - [x] Sorting, selecting and sampling.
-- [ ] Random result.
+- [x] Random result.
 - [ ] Grouping support.
 - [ ] N-gram support.
 - [ ] Cursor pagination support.
@@ -104,6 +104,38 @@ func main() {
 
     // Fetch a work by its ID
     work, err := client.Works().Get("W2741809807")
+    if err != nil {
+        fmt.Printf("Error fetching work: %v\n", err)
+        return
+    }
+
+    // Print the work
+    workJSON, _ := json.MarshalIndent(work, "", "  ")
+    fmt.Println("Work:", string(workJSON))
+}
+```
+
+### Get random entity
+
+You can use the client to fetch a random entity like a work, author, or source. The following example demonstrates how to fetch a random work.
+
+```go
+package main
+
+import (
+    "encoding/json"
+    "fmt"
+
+    "github.com/Sunhill666/goalex"
+)
+
+// Example: Get a single work by ID
+func main() {
+    // Create a new client with polite pool
+    client := goalex.NewClient()
+
+    // Fetch a work by its ID
+    work, err := client.Works().GetRandom()
     if err != nil {
         fmt.Printf("Error fetching work: %v\n", err)
         return
