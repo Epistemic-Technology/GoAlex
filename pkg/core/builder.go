@@ -1,8 +1,9 @@
 package core
 
 import (
-	"github.com/Sunhill666/goalex/internal/model"
 	"maps"
+
+	"github.com/Sunhill666/goalex/internal/model"
 )
 
 type QueryBuilder[T any] struct {
@@ -117,6 +118,16 @@ func (q *QueryBuilder[T]) GroupBy(field string, includeUnknown bool) *QueryBuild
 		q.params.GroupBy += ":include_unknown"
 	}
 	return q
+}
+
+func (q *QueryBuilder[T]) AutoComplete(query string) *QueryBuilder[model.Completion] {
+	autoCompleteBuilder := &QueryBuilder[model.Completion]{
+		client:   q.client,
+		endpoint: EndPointAutoComplete + q.endpoint,
+		params:   q.params,
+	}
+	autoCompleteBuilder.params.AutoComplete = query
+	return autoCompleteBuilder
 }
 
 func (q *QueryBuilder[T]) List() ([]*T, error) {

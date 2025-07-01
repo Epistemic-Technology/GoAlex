@@ -12,6 +12,18 @@ type APCPrice struct {
 	Currency string `json:"currency,omitempty"`
 }
 
+type Completion struct {
+	ID           string `json:"id,omitempty"`
+	ShortID      string `json:"short_id,omitempty"`
+	DisplayName  string `json:"display_name,omitempty"`
+	Hint         string `json:"hint,omitempty"`
+	CitedByCount int    `json:"cited_by_count,omitempty"`
+	WorksCount   int    `json:"works_count,omitempty"`
+	EntityType   string `json:"entity_type,omitempty"`
+	ExternalID   string `json:"external_id,omitempty"`
+	FilterKey    string `json:"filter_key,omitempty"`
+}
+
 type CountsByYear struct {
 	CitedByCount int `json:"cited_by_count,omitempty"`
 	WorksCount   int `json:"works_count,omitempty"`
@@ -31,6 +43,20 @@ type GEO struct {
 	Country        string  `json:"country,omitempty"`
 	Latitude       float32 `json:"latitude,omitempty"`
 	Longitude      float32 `json:"longitude,omitempty"`
+}
+
+type GroupBy struct {
+	Key            string `json:"key,omitempty"`
+	KeyDisplayName string `json:"key_display_name,omitempty"`
+	Count          int    `json:"count,omitempty"`
+}
+
+type PaginatedResponseMeta struct {
+	Count       int `json:"count,omitempty"`
+	DBRespTime  int `json:"db_response_time_ms,omitempty"`
+	Page        int `json:"page,omitempty"`
+	PerPage     int `json:"per_page,omitempty"`
+	GroupsCount int `json:"groups_count,omitempty"`
 }
 
 type Role struct {

@@ -14,6 +14,7 @@ const (
 	EndpointPublishers   = "/publishers"
 	EndpointFunders      = "/funders"
 	EndpointConcepts     = "/concepts"
+	EndPointAutoComplete = "/autocomplete"
 )
 
 func Query[T any](c *Client, endpoint string) *QueryBuilder[T] {

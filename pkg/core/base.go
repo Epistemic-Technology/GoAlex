@@ -7,7 +7,6 @@ import (
 	"github.com/Sunhill666/goalex/internal/model"
 )
 
-
 func ListEntities[T any](
 	c *Client,
 	endpoint string,

@@ -28,14 +28,15 @@ func (p *PaginationParams) ToQuery() url.Values {
 }
 
 type QueryParams struct {
-	Pagination *PaginationParams
-	Filter     map[string]any
-	Search     string
-	Sort       map[string]bool
-	Select     []string
-	Sample     int
-	Seed       int
-	GroupBy    string
+	Pagination   *PaginationParams
+	Filter       map[string]any
+	Search       string
+	Sort         map[string]bool
+	Select       []string
+	Sample       int
+	Seed         int
+	GroupBy      string
+	AutoComplete string
 }
 
 func (q *QueryParams) ToQuery() url.Values {
@@ -86,6 +87,9 @@ func (q *QueryParams) ToQuery() url.Values {
 	}
 	if q.GroupBy != "" {
 		query.Set("group_by", q.GroupBy)
+	}
+	if q.AutoComplete != "" {
+		query.Set("q", q.AutoComplete)
 	}
 	return query
 }

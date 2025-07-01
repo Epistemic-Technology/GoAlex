@@ -6,8 +6,8 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/Sunhill666/goalex/pkg/core"
 	"github.com/Sunhill666/goalex/internal/model"
+	"github.com/Sunhill666/goalex/pkg/core"
 )
 
 type getTester[T any] struct {
