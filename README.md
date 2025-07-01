@@ -40,6 +40,10 @@ go get -u github.com/Sunhill666/goalex
 
 ### Client Initialization
 
+<details>
+
+<summary>Click to expand</summary>
+
 To use the GoAlex library, you need to create a new client. You can do this by calling the `goalex.NewClient()` function. By default, it uses the common pool with a rate limit. Read more about the [OpenAlex rate limits](https://docs.openalex.org/how-to-use-the-api/rate-limits-and-authentication).
 
 ```go
@@ -53,7 +57,13 @@ func main() {
 }
 ```
 
+</details>
+
 #### Polite Pool
+
+<details>
+
+<summary>Click to expand</summary>
 
 To use the polite pool, you need to set an email address. This is required by OpenAlex to allow higher rate limits. You can do this by using the `goalex.PolitePool` function when creating a new client.
 
@@ -68,7 +78,13 @@ func main() {
 }
 ```
 
+</details>
+
 #### Authentication
+
+<details>
+
+<summary>Click to expand</summary>
 
 For OpenAlex premium users, you can use the `goalex.Auth` function to authenticate your client. This will allow you to access premium features and higher rate limits.
 
@@ -83,7 +99,13 @@ func main() {
 }
 ```
 
+</details>
+
 ### Get single entity
+
+<details>
+
+<summary>Click to expand</summary>
 
 You can use the client to fetch a single entity like a work, author, or source. The following example demonstrates how to fetch a work by its ID.
 
@@ -115,7 +137,13 @@ func main() {
 }
 ```
 
+</details>
+
 ### Get random entity
+
+<details>
+
+<summary>Click to expand</summary>
 
 You can use the client to fetch a random entity like a work, author, or source. The following example demonstrates how to fetch a random work.
 
@@ -147,7 +175,13 @@ func main() {
 }
 ```
 
+</details>
+
 ### Get list entities
+
+<details>
+
+<summary>Click to expand</summary>
 
 You can use the client to fetch a list of works, authors, sources, etc. The following example demonstrates how to fetch a list of works using the `Works()` method.
 
@@ -182,7 +216,13 @@ func main() {
 }
 ```
 
+</details>
+
 #### Pagination
+
+<details>
+
+<summary>Click to expand</summary>
 
 You can also paginate the results by using the `Page()` and `PerPage()` methods. By default, the API returns the first page with 25 items per page.
 
@@ -220,7 +260,13 @@ func main() {
 }
 ```
 
+</details>
+
 #### Metadata
+
+<details>
+
+<summary>Click to expand</summary>
 
 The `Works()` method also supports metadata. You can use the `ListWithMeta()` method to get the results along with metadata.
 
@@ -260,11 +306,17 @@ func main() {
 }
 ```
 
+</details>
+
 ### Filtering and Searching
 
 The library supports filtering and searching for works, authors, sources, etc.
 
 #### Filter Example
+
+<details>
+
+<summary>Click to expand</summary>
 
 You can filter works by multiple conditions using the `FilterMap()` method, and filter by a single condition using the `Filter()` method. The following example demonstrates how to filter works by country code and authors count.
 
@@ -316,7 +368,13 @@ func main() {
 }
 ```
 
+</details>
+
 #### Search Example
+
+<details>
+
+<summary>Click to expand</summary>
 
 You can search for works using the `Search()` method. The following example demonstrates how to search for works with a query.
 
@@ -351,7 +409,13 @@ func main() {
 }
 ```
 
+</details>
+
 #### Search Filter
+
+<details>
+
+<summary>Click to expand</summary>
 
 You can also combine search with filtering. The following example demonstrates how to search for works with a query and filter by country code.
 
@@ -388,11 +452,17 @@ func main() {
 }
 ```
 
+</details>
+
 ### Sorting, Selecting and Sampling
 
 The library supports sorting, selecting, and sampling of works.
 
 #### Sort Example
+
+<details>
+
+<summary>Click to expand</summary>
 
 You can sort the results by multiple fields using the `SortMap()` method, or by a single field using the `Sort()` method. The following example demonstrates how to sort works by publication year and relevance score.
 
@@ -444,7 +514,13 @@ func main() {
 }
 ```
 
+</details>
+
 #### Select Example
+
+<details>
+
+<summary>Click to expand</summary>
 
 You can select specific fields from the results using the `Select()` method. The following example demonstrates how to select the ID, DOI, and display name of works.
 
@@ -477,7 +553,13 @@ func main() {
 }
 ```
 
+</details>
+
 #### Sample Example
+
+<details>
+
+<summary>Click to expand</summary>
 
 You can sample a specific number of works using the `Sample()` method. And you can also set a seed for reproducibility using the `Seed()` method. The following example demonstrates how to sample 2 works with a seed of 42.
 
@@ -510,7 +592,13 @@ func main() {
 }
 ```
 
+</details>
+
 ### Grouping Example
+
+<details>
+
+<summary>Click to expand</summary>
 
 You can group works by a specific field using the `GroupBy()` method. The following example demonstrates how to group works by authorship countries and include unknown countries.
 
@@ -543,6 +631,8 @@ func main() {
     }
 }
 ```
+
+</details>
 
 ## License
 
