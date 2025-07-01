@@ -23,7 +23,7 @@ As of now, the library is in its early stages. The following features are planne
 - [x] Filtering and searching.
 - [x] Sorting, selecting and sampling.
 - [x] Random result.
-- [ ] Grouping support.
+- [x] Grouping support.
 - [ ] N-gram support.
 - [ ] Cursor pagination support.
 - [ ] Autocomplete support.
@@ -506,6 +506,40 @@ func main() {
     for _, work := range sampleWorks {
         workJSON, _ := json.MarshalIndent(work, "", "  ")
         fmt.Println("Works:", string(workJSON))
+    }
+}
+```
+
+### Grouping Example
+
+You can group works by a specific field using the `GroupBy()` method. The following example demonstrates how to group works by authorship countries and include unknown countries.
+
+```go
+package main
+
+import (
+    "encoding/json"
+    "fmt"
+
+    "github.com/Sunhill666/goalex"
+)
+
+func main() {
+    // Create a new client with polite pool
+    client := goalex.NewClient()
+
+    // Group works by authorship countries and include unknown
+    groupWorks, err := client.Works().GroupBy("authorships.countries", true).ListGroupBy()
+
+    if err != nil {
+        fmt.Printf("Error fetching works: %v\n", err)
+        return
+    }
+
+    // Print the works
+    for _, work := range groupWorks {
+        workJSON, _ := json.MarshalIndent(work, "", "  ")
+        fmt.Println("Group Work:", string(workJSON))
     }
 }
 ```

@@ -35,6 +35,7 @@ type QueryParams struct {
 	Select     []string
 	Sample     int
 	Seed       int
+	GroupBy    string
 }
 
 func (q *QueryParams) ToQuery() url.Values {
@@ -82,6 +83,9 @@ func (q *QueryParams) ToQuery() url.Values {
 	}
 	if q.Seed > 0 {
 		query.Set("seed", fmt.Sprintf("%d", q.Seed))
+	}
+	if q.GroupBy != "" {
+		query.Set("group_by", q.GroupBy)
 	}
 	return query
 }
