@@ -1,34 +1,41 @@
 # GoAlex
 
-GoAlex is a Go library for [OpenAlex API](https://docs.openalex.org/).
+**GoAlex** is a Go client library for the [OpenAlex API](https://docs.openalex.org/).
 
-> [OpenAlex](https://openalex.org/) is a fully open catalog of the global research system. It's named after the ancient Library of Alexandria and made by the nonprofit OurResearch.
+> [OpenAlex](https://openalex.org/) is a fully open catalog of the global research system, created by the nonprofit organization OurResearch. It's named after the ancient Library of Alexandria.
 
 ## Features
 
-- Provides data structures for OpenAlex entities like works, authors, sources, etc.
-- Easy to use lightweight API client for OpenAlex.
-- Supports pagination, filtering, searching, sorting, selecting and sampling.
-- Supports polite pool for higher rate limits.
+* Provides Go structs for OpenAlex entities: works, authors, sources, institutions, concepts, and venues
+* Lightweight and easy-to-use API client
+* Supports:
+
+  * Pagination (standard and cursor)
+  * Filtering and full-text search
+  * Sorting, field selection, and random sampling
+  * Grouping and aggregation
+  * Autocomplete
+* Polite pool support for higher rate limits
+* Authentication support for premium access
 
 ## Roadmap
 
-As of now, the library is in its early stages. The following features are planned:
+The project is in active development. The following features have been implemented:
 
-- [x] Basic data structures.
-- [x] Polite pool support.
-- [x] Basic API client.
-- [x] Authentication support.
-- [x] Pagination support.
-- [x] Filtering and searching.
-- [x] Sorting, selecting and sampling.
-- [x] Random result.
-- [x] Grouping support.
-- [x] Cursor pagination support.
-- [x] Autocomplete support.
-- [ ] N-gram support. (Not available in OpenAlex yet.)
+* [x] Core data structures
+* [x] Polite pool support
+* [x] Basic API client
+* [x] Authentication support
+* [x] Pagination support
+* [x] Filtering and searching
+* [x] Sorting, selecting, and sampling
+* [x] Random result retrieval
+* [x] Grouping support
+* [x] Cursor pagination
+* [x] Autocomplete support
+* [ ] N-gram support *(Not yet available in OpenAlex)*
 
-All features will be implemented gradually, and contributions are welcome!
+Community contributions are welcome!
 
 ## Installation
 
@@ -40,709 +47,182 @@ go get -u github.com/Sunhill666/goalex
 
 ### Client Initialization
 
-To use the GoAlex library, you need to create a new client. You can do this by calling the `goalex.NewClient()` function. By default, it uses the common pool with a rate limit. Read more about the [OpenAlex rate limits](https://docs.openalex.org/how-to-use-the-api/rate-limits-and-authentication).
-
-<details>
-
-<summary>Click to expand</summary>
+Create a new client with:
 
 ```go
-package main
-
-import "github.com/Sunhill666/goalex"
-
-func main() {
-    // Create a new client with common pool
-    client := goalex.NewClient()
-}
+client := goalex.NewClient()
 ```
 
-</details>
-
-#### Polite Pool
-
-To use the polite pool, you need to set an email address. This is required by OpenAlex to allow higher rate limits. You can do this by using the `goalex.PolitePool` function when creating a new client.
-
-<details>
-
-<summary>Click to expand</summary>
+You can customize the client with options:
 
 ```go
-package main
-
-import "github.com/Sunhill666/goalex"
-
-func main() {
-    // Create a new client with polite pool
-    client := goalex.NewClient(goalex.PolitePool("you@example.com"))
-}
+client := goalex.NewClient(goalex.WithRetry(3, 2 * time.Second), goalex.WithTimeout(10 * time.Second))
 ```
 
-</details>
-
-#### Authentication
-
-For OpenAlex premium users, you can use the `goalex.Auth` function to authenticate your client. This will allow you to access premium features and higher rate limits.
-
-<details>
-
-<summary>Click to expand</summary>
+To use a custom HTTP client, you can pass it as an option:
 
 ```go
-package main
-
-import "github.com/Sunhill666/goalex"
-
-func main() {
-    // Create a new client with authentication
-    client := goalex.NewClient(goalex.Auth("your_api_key"))
-}
+client := goalex.NewClient(goalex.WithHTTPClient(&http.Client{ Timeout: 10 * time.Second }))
 ```
 
-</details>
-
-### Get single entity
-
-You can use the client to fetch a single entity like a work, author, or source. The following example demonstrates how to fetch a work by its ID.
-
-<details>
-
-<summary>Click to expand</summary>
+To use the polite pool (recommended for higher rate limits), provide an email:
 
 ```go
-package main
-
-import (
-    "encoding/json"
-    "fmt"
-
-    "github.com/Sunhill666/goalex"
-)
-
-// Example: Get a single work by ID
-func main() {
-    // Create a new client with polite pool
-    client := goalex.NewClient(goalex.PolitePool("you@example.com"))
-
-    // Fetch a work by its ID
-    work, err := client.Works().Get("W2741809807")
-    if err != nil {
-        fmt.Printf("Error fetching work: %v\n", err)
-        return
-    }
-
-    // Print the work
-    workJSON, _ := json.MarshalIndent(work, "", "  ")
-    fmt.Println("Work:", string(workJSON))
-}
+client := goalex.NewClient(goalex.PolitePool("you@example.com"))
 ```
 
-</details>
-
-### Get random entity
-
-You can use the client to fetch a random entity like a work, author, or source. The following example demonstrates how to fetch a random work by using the `GetRandom()` method.
-
-<details>
-
-<summary>Click to expand</summary>
+To use authentication (for premium features):
 
 ```go
-package main
-
-import (
-    "encoding/json"
-    "fmt"
-
-    "github.com/Sunhill666/goalex"
-)
-
-// Example: Get a single work by ID
-func main() {
-    // Create a new client with polite pool
-    client := goalex.NewClient()
-
-    // Fetch a work by its ID
-    work, err := client.Works().GetRandom()
-    if err != nil {
-        fmt.Printf("Error fetching work: %v\n", err)
-        return
-    }
-
-    // Print the work
-    workJSON, _ := json.MarshalIndent(work, "", "  ")
-    fmt.Println("Work:", string(workJSON))
-}
+client := goalex.NewClient(goalex.Auth("your_api_key"))
 ```
 
-</details>
+---
 
-### Get list entities
+### Fetch a Single Entity
 
-You can use the client to fetch a list of works, authors, sources, etc. The following example demonstrates how to fetch a list of works using the `Works()` method.
-
-<details>
-
-<summary>Click to expand</summary>
+Retrieve a work by ID:
 
 ```go
-package main
-
-import (
-    "encoding/json"
-    "fmt"
-
-    "github.com/Sunhill666/goalex"
-)
-
-// Example: Get list of works
-func main() {
-    // Create a new client with polite pool
-    client := goalex.NewClient(goalex.PolitePool("you@example.com"))
-
-    // Fetch a list of works
-    works, err := client.Works().List()
-
-    if err != nil {
-        fmt.Printf("Error fetching works: %v\n", err)
-        return
-    }
-
-    // Print the works
-    for _, work := range works {
-        workJSON, _ := json.MarshalIndent(work, "", "  ")
-        fmt.Println("Works:", string(workJSON))
-    }
-}
+work, err := client.Works().Get("W2741809807")
 ```
 
-</details>
+---
 
-#### Pagination
+### Fetch a Random Entity
 
-You can also paginate the results by using the `Page()` and `PerPage()` methods. By default, the API returns the first page with 25 items per page.
-
-<details>
-
-<summary>Click to expand</summary>
+Get a random work:
 
 ```go
-package main
-
-import (
-    "encoding/json"
-    "fmt"
-
-    "github.com/Sunhill666/goalex"
-)
-
-// Example: Get list of works with custom pagination
-func main() {
-    // Create a new client with polite pool
-    client := goalex.NewClient(goalex.PolitePool("you@example.com"))
-
-    // Fetch a list of works with custom pagination
-    works, err := client.Works().
-        Page(1).     // Set the page number
-        PerPage(10). // Set the number of items per page
-        List()
-
-    if err != nil {
-        fmt.Printf("Error fetching works: %v\n", err)
-        return
-    }
-
-    // Print the works
-    for _, work := range works {
-        workJSON, _ := json.MarshalIndent(work, "", "  ")
-        fmt.Println("Works with custom pagination:", string(workJSON))
-    }
-}
+work, err := client.Works().GetRandom()
 ```
 
-</details>
+---
 
-#### Metadata
+### List Entities
 
-The `Works()` method also supports metadata. You can use the `ListWithMeta()` method to get the results along with metadata.
-
-<details>
-
-<summary>Click to expand</summary>
+Fetch a list of works:
 
 ```go
-package main
-
-import (
-    "encoding/json"
-    "fmt"
-
-    "github.com/Sunhill666/goalex"
-)
-
-// Example: Get list of works with metadata
-func main() {
-    // Create a new client with polite pool
-    client := goalex.NewClient(goalex.PolitePool("you@example.com"))
-
-    // Fetch a list of works
-    worksWithMeta, err := client.Works().ListWithMeta()
-
-    if err != nil {
-        fmt.Printf("Error fetching works: %v\n", err)
-        return
-    }
-
-    // Get results and metadata
-    results, meta := worksWithMeta.Results, worksWithMeta.Meta
-
-    // Print the works with metadata
-    for _, work := range results {
-        workJSON, _ := json.MarshalIndent(work, "", "  ")
-        fmt.Println("Work results from `ListWithMeta()`:", string(workJSON))
-    }
-    // Print the metadata
-    fmt.Printf("Metadata: %+v\n", meta)
-}
+works, err := client.Works().List()
 ```
 
-#### Cursor Pagination
-
-You can use the `Cursor()` method to get the next page of results using cursor pagination. This is useful for large datasets where you want to fetch results in chunks. The following example demonstrates how to use cursor pagination to fetch works.
-
-<details>
-
-<summary>Click to expand</summary>
+With pagination:
 
 ```go
-package main
-
-import (
-    "encoding/json"
-    "fmt"
-
-    "github.com/Sunhill666/goalex"
-)
-
-func main() {
-    // Create a new client with polite pool
-    client := goalex.NewClient()
-
-    // Get autocomplete suggestions for institutions
-    works, nextCursor, err := client.Works().Filter("publication_year", 2020).PerPage(100).Cursor()
-
-    if err != nil {
-        fmt.Printf("Error fetching completions: %v\n", err)
-        return
-    }
-
-    // Print the works
-    for _, work := range works {
-        workJSON, _ := json.MarshalIndent(work, "", "  ")
-        fmt.Println("Work:", string(workJSON))
-    }
-
-    nextWorks, _, err := client.Works().Filter("publication_year", 2020).PerPage(100).Cursor(nextCursor)
-
-    if err != nil {
-        fmt.Printf("Error fetching next completions: %v\n", err)
-        return
-    }
-
-    // Print the next works
-    for _, work := range nextWorks {
-        workJSON, _ := json.MarshalIndent(work, "", "  ")
-        fmt.Println("Next Work:", string(workJSON))
-    }
-}
+works, err := client.Works().Page(1).PerPage(10).List()
 ```
 
-</details>
+With metadata:
+
+```go
+resultWithMeta, err := client.Works().ListWithMeta()
+results, meta := resultWithMeta.Results, resultWithMeta.Meta
+```
+
+---
+
+### Cursor Pagination
+
+For large result sets:
+
+```go
+works, nextCursor, err := client.Works().Filter("publication_year", 2020).PerPage(100).Cursor()
+```
+
+To get the next page:
+
+```go
+nextWorks, _, err := client.Works().Filter("publication_year", 2020).PerPage(100).Cursor(nextCursor)
+```
+
+---
 
 ### Filtering and Searching
 
-The library supports filtering and searching for works, authors, sources, etc.
-
-#### Filter Example
-
-You can filter works by multiple conditions using the `FilterMap()` method, and filter by a single condition using the `Filter()` method. The following example demonstrates how to filter works by country code and authors count.
-
-<details>
-
-<summary>Click to expand</summary>
+#### Filtering
 
 ```go
-package main
-
-import (
-    "encoding/json"
-    "fmt"
-
-    "github.com/Sunhill666/goalex"
-)
-
-// Example: Filter and search works
-func main() {
-    // Create a new client with polite pool
-    client := goalex.NewClient(goalex.PolitePool("you@example.com"))
-
-    // Fetch a list of works with filtering with multiple conditions.
-    works, err := client.Works().FilterMap(map[string]any{
-        "institutions.country_code": "fr+gb",
-        "authors_count":             ">2",
-    }).List()
-
-    if err != nil {
-        fmt.Printf("Error fetching works: %v\n", err)
-        return
-    }
-
-    // Print the works
-    for _, work := range works {
-        workJSON, _ := json.MarshalIndent(work, "", "  ")
-        fmt.Println("Works:", string(workJSON))
-    }
-
-    // Or filter with a single condition.
-    works, err = client.Works().Filter("institutions.country_code", "fr+gb").List()
-
-    if err != nil {
-        fmt.Printf("Error fetching works: %v\n", err)
-        return
-    }
-
-    // Print the works
-    for _, work := range works {
-        workJSON, _ := json.MarshalIndent(work, "", "  ")
-        fmt.Println("Works with single filter condition:", string(workJSON))
-    }
-}
+works, err := client.Works().FilterMap(map[string]any{
+    "institutions.country_code": "fr+gb",
+    "authors_count":             ">2",
+}).List()
 ```
 
-</details>
-
-#### Search Example
-
-You can search for works using the `Search()` method. The following example demonstrates how to search for works with a query.
-
-<details>
-
-<summary>Click to expand</summary>
+#### Searching
 
 ```go
-package main
-
-import (
-    "encoding/json"
-    "fmt"
-
-    "github.com/Sunhill666/goalex"
-)
-
-// Example: Search works
-func main() {
-    // Create a new client with polite pool
-    client := goalex.NewClient(goalex.PolitePool("you@example.com"))
-    // Search for works with a query
-    works, err := client.Works().Search("machine learning").List()
-    // Or, if you want to exact search
-    // works, err = client.Works().Search("\"machine learning\"").List()
-    if err != nil {
-        fmt.Printf("Error searching works: %v\n", err)
-        return
-    }
-
-    // Print the works
-    for _, work := range works {
-        workJSON, _ := json.MarshalIndent(work, "", "  ")
-        fmt.Println("Search results:", string(workJSON))
-    }
-}
+works, err := client.Works().Search("machine learning").List()
 ```
 
-</details>
-
-#### Search Filter
-
-You can also combine search with filtering by using the `SearchFilter()` method. The following example demonstrates how to search for works with a query and filter by country code.
-
-<details>
-
-<summary>Click to expand</summary>
+#### Combined Search + Filter
 
 ```go
-package main
-
-import (
-    "encoding/json"
-    "fmt"
-
-    "github.com/Sunhill666/goalex"
-)
-
-// Example: Search works with filter
-func main() {
-    // Create a new client with polite pool
-    client := goalex.NewClient(goalex.PolitePool("you@example.com"))
-
-    // Search for works with a query and filter by country code
-    works, err := client.Works().SearchFilter(map[string]string{
-        "display_name": "surgery",
-        "title":        "surgery",
-    }, true).List() // Search without stemming
-    if err != nil {
-        fmt.Printf("Error fetching works: %v\n", err)
-        return
-    }
-
-    // Print the works
-    for _, work := range works {
-        workJSON, _ := json.MarshalIndent(work, "", "  ")
-        fmt.Println("Works:", string(workJSON))
-    }
-}
+works, err := client.Works().SearchFilter(map[string]string{
+    "display_name": "surgery",
+    "title":        "surgery",
+}, true).List()
 ```
 
-</details>
+---
 
-### Sorting, Selecting and Sampling
+### Sorting, Selecting, and Sampling
 
-The library supports sorting, selecting, and sampling of works.
-
-#### Sort Example
-
-You can sort the results by multiple fields using the `SortMap()` method, or by a single field using the `Sort()` method. The following example demonstrates how to sort works by publication year and relevance score.
-
-<details>
-
-<summary>Click to expand</summary>
+#### Sorting
 
 ```go
-package main
-
-import (
-    "encoding/json"
-    "fmt"
-
-    "github.com/Sunhill666/goalex"
-)
-
-// Example: Sort works
-func main() {
-    // Create a new client with polite pool
-    client := goalex.NewClient(goalex.PolitePool("you@example.com"))
-
-    // Fetch a list of works and sort them by publication year and relevance score
-    works, err := client.Works().SearchFilter(map[string]string{
-        "display_name": "bioplastics",
-    }, false).SortMap(map[string]bool{
-        "publication_year": true, // Descending order
-        "relevance_score":  true, // Descending order
-    }).List()
-    if err != nil {
-        fmt.Printf("Error fetching work: %v\n", err)
-        return
-    }
-
-    // Print the sorted works
-    for _, work := range works {
-        workJSON, _ := json.MarshalIndent(work, "", "  ")
-        fmt.Println("Sorted works:", string(workJSON))
-    }
-
-    // Or sort by a single field
-    works, err = client.Works().Sort("publication_year", true).List()
-    if err != nil {
-        fmt.Printf("Error fetching works: %v\n", err)
-        return
-    }
-
-    // Print the sorted works
-    for _, work := range works {
-        workJSON, _ := json.MarshalIndent(work, "", "  ")
-        fmt.Println("Sorted works by single field:", string(workJSON))
-    }
-}
+works, err := client.Works().SortMap(map[string]bool{
+    "publication_year": true,
+    "relevance_score":  true,
+}).List()
 ```
 
-</details>
-
-#### Select Example
-
-You can select specific fields from the results using the `Select()` method. The following example demonstrates how to select the ID, DOI, and display name of works.
-
-<details>
-
-<summary>Click to expand</summary>
+#### Selecting Fields
 
 ```go
-package main
-
-import (
-    "encoding/json"
-    "fmt"
-
-    "github.com/Sunhill666/goalex"
-)
-
-func main() {
-    // Create a new client with polite pool
-    client := goalex.NewClient(goalex.PolitePool("you@example.com"))
-
-    selectedWorks, err := client.Works().Select("id", "doi", "display_name").List()
-
-    if err != nil {
-        fmt.Printf("Error fetching works: %v\n", err)
-        return
-    }
-
-    // Print the works
-    for _, work := range selectedWorks {
-        workJSON, _ := json.MarshalIndent(work, "", "  ")
-        fmt.Println("Works:", string(workJSON))
-    }
-}
+works, err := client.Works().Select("id", "doi", "display_name").List()
 ```
 
-</details>
-
-#### Sample Example
-
-You can sample a specific number of works using the `Sample()` method. And you can also set a seed for reproducibility using the `Seed()` method. The following example demonstrates how to sample 2 works with a seed of 42.
-
-<details>
-
-<summary>Click to expand</summary>
+#### Sampling
 
 ```go
-package main
-
-import (
-    "encoding/json"
-    "fmt"
-
-    "github.com/Sunhill666/goalex"
-)
-
-func main() {
-    // Create a new client with polite pool
-    client := goalex.NewClient(goalex.PolitePool("you@example.com"))
-
-    sampleWorks, err := client.Works().Sample(2).Seed(42).List()
-
-    if err != nil {
-        fmt.Printf("Error fetching works: %v\n", err)
-        return
-    }
-
-    // Print the works
-    for _, work := range sampleWorks {
-        workJSON, _ := json.MarshalIndent(work, "", "  ")
-        fmt.Println("Works:", string(workJSON))
-    }
-}
+works, err := client.Works().Sample(2).Seed(42).List()
 ```
 
-</details>
+---
 
-### Grouping Example
-
-You can group works by a specific field using the `GroupBy()` method. The following example demonstrates how to group works by authorship countries and include unknown countries.
-
-<details>
-
-<summary>Click to expand</summary>
+### Grouping
 
 ```go
-package main
-
-import (
-    "encoding/json"
-    "fmt"
-
-    "github.com/Sunhill666/goalex"
-)
-
-func main() {
-    // Create a new client with polite pool
-    client := goalex.NewClient()
-
-    // Group works by authorship countries and include unknown
-    groupWorks, err := client.Works().GroupBy("authorships.countries", true).ListGroupBy()
-
-    if err != nil {
-        fmt.Printf("Error fetching works: %v\n", err)
-        return
-    }
-
-    // Print the works
-    for _, work := range groupWorks {
-        workJSON, _ := json.MarshalIndent(work, "", "  ")
-        fmt.Println("Group Work:", string(workJSON))
-    }
-}
+grouped, err := client.Works().GroupBy("authorships.countries", true).ListGroupBy()
 ```
 
-</details>
+---
 
-### Autocomplete Example
+### Autocomplete
 
-You can use the `AutoComplete()` method to get autocomplete suggestions for institutions, works, authors, etc. The following example demonstrates how to get autocomplete suggestions for institutions and works.
-
-<details>
-
-<summary>Click to expand</summary>
+#### Institutions
 
 ```go
-package main
-
-import (
-    "encoding/json"
-    "fmt"
-
-    "github.com/Sunhill666/goalex"
-)
-
-func main() {
-    // Create a new client with polite pool
-    client := goalex.NewClient()
-
-    // Get autocomplete suggestions for institutions
-    completions, err := client.Institutions().AutoComplete("flori").List()
-
-    if err != nil {
-        fmt.Printf("Error fetching completions: %v\n", err)
-        return
-    }
-
-    // Print the completions
-    for _, completion := range completions {
-        completionJSON, _ := json.MarshalIndent(completion, "", "  ")
-        fmt.Println("Completion:", string(completionJSON))
-    }
-
-    // Get autocomplete suggestions for works with a specific filter
-    withFilterAndSearch, err := client.Works().Filter("publication_year", 2010).Search("frogs").AutoComplete("greenhouse").List()
-
-    if err != nil {
-        fmt.Printf("Error fetching filtered and searched completions: %v\n", err)
-        return
-    }
-
-    // Print the filtered and searched completions
-    for _, completion := range withFilterAndSearch {
-        completionJSON, _ := json.MarshalIndent(completion, "", "  ")
-        fmt.Println("Completion:", string(completionJSON))
-    }
-}
+results, err := client.Institutions().AutoComplete("flori").List()
 ```
 
-</details>
+#### Works with filter and search
+
+```go
+results, err := client.Works().
+    Filter("publication_year", 2010).
+    Search("frogs").
+    AutoComplete("greenhouse").
+    List()
+```
+
+---
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+Licensed under the [MIT License](LICENSE).
 
-## Issues
+## Issues & Contributions
 
-If you find any issues or have feature requests, please open an issue on the [GitHub repository](https://github.com/Sunhill666/goalex/issues).
+Found a bug or have a feature request? Feel free to open an issue or submit a PR on the [GitHub repo](https://github.com/Sunhill666/goalex/issues).

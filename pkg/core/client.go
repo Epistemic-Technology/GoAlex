@@ -9,6 +9,7 @@ import (
 	"time"
 )
 
+// Client represents an HTTP client for interacting with the OpenAlex API.
 type Client struct {
 	BaseURL    string
 	HTTPClient *http.Client
@@ -19,20 +20,24 @@ type Client struct {
 	RetryDelay time.Duration
 }
 
+// Option is a function type for configuring the Client.
 type Option func(*Client)
 
+// PolitePool configures the client to use a polite pool with the provided email address.
 func PolitePool(email string) Option {
 	return func(c *Client) {
 		c.MailTo = email
 	}
 }
 
+// Auth configures the client to use the provided API token for authentication.
 func Auth(token string) Option {
 	return func(c *Client) {
 		c.Token = token
 	}
 }
 
+// WithTimeout configures the client's timeout duration.
 func WithTimeout(timeout time.Duration) Option {
 	return func(c *Client) {
 		c.Timeout = timeout
@@ -40,6 +45,7 @@ func WithTimeout(timeout time.Duration) Option {
 	}
 }
 
+// WithRetry configures the client's retry behavior with maximum retry attempts and delay.
 func WithRetry(maxRetries int, retryDelay time.Duration) Option {
 	return func(c *Client) {
 		c.MaxRetries = maxRetries
@@ -47,6 +53,7 @@ func WithRetry(maxRetries int, retryDelay time.Duration) Option {
 	}
 }
 
+// WithHTTPClient configures the client to use a custom HTTP client.
 func WithHTTPClient(client *http.Client) Option {
 	return func(c *Client) {
 		c.HTTPClient = client
@@ -56,6 +63,7 @@ func WithHTTPClient(client *http.Client) Option {
 	}
 }
 
+// New creates a new Client with the provided options.
 func New(opts ...Option) *Client {
 	c := &Client{
 		BaseURL:    "https://api.openalex.org",
@@ -74,7 +82,6 @@ func isRetryableError(err error) bool {
 	if err == nil {
 		return false
 	}
-	// 网络错误通常可以重试
 	if urlErr, ok := err.(*url.Error); ok {
 		return urlErr.Temporary() || urlErr.Timeout()
 	}
@@ -94,10 +101,13 @@ func isRetryableStatusCode(statusCode int) bool {
 	}
 }
 
+// Get performs a GET request to the specified path and decodes the response into out.
 func (c *Client) Get(path string, out any) error {
 	return c.GetWithContext(context.Background(), path, out)
 }
 
+// GetWithContext performs a GET request to the specified path with context support
+// and decodes the response into out.
 func (c *Client) GetWithContext(ctx context.Context, path string, out any) error {
 	base, err := url.Parse(c.BaseURL)
 	if err != nil {
@@ -146,7 +156,6 @@ func (c *Client) GetWithContext(ctx context.Context, path string, out any) error
 			return fmt.Errorf("request failed after %d attempts: %w", attempt+1, err)
 		}
 
-		// 检查HTTP状态码
 		if resp.StatusCode >= 400 {
 			_ = resp.Body.Close()
 			if isRetryableStatusCode(resp.StatusCode) && attempt < c.MaxRetries {
