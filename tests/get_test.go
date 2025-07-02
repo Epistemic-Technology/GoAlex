@@ -6,8 +6,8 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/Sunhill666/goalex/pkg/core"
 	"github.com/Sunhill666/goalex/internal/model"
+	"github.com/Sunhill666/goalex/pkg/core"
 )
 
 type getTester[T any] struct {
@@ -63,7 +63,7 @@ func TestAuthorsGet(t *testing.T) {
 	t.Parallel()
 	runGetTests(t, []getTester[model.Author]{
 		{
-			id:   "A5023888391",
+			id:   "A5317838346",
 			name: "authors basic",
 			get: func(c *core.Client, id string) (*model.Author, error) {
 				return c.Authors().Get(id)

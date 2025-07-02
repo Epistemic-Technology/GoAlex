@@ -3,8 +3,8 @@ package test
 import (
 	"testing"
 
-	"github.com/Sunhill666/goalex/pkg/core"
 	"github.com/Sunhill666/goalex/internal/model"
+	"github.com/Sunhill666/goalex/pkg/core"
 )
 
 type listTester[T any] struct {

@@ -1,8 +1,9 @@
 package core
 
 import (
-	"github.com/Sunhill666/goalex/internal/model"
 	"maps"
+
+	"github.com/Sunhill666/goalex/internal/model"
 )
 
 type QueryBuilder[T any] struct {
@@ -107,12 +108,55 @@ func (q *QueryBuilder[T]) Get(id string) (*T, error) {
 	return GetEntity[T](q.client, q.endpoint, id)
 }
 
-func (q *QueryBuilder[T]) List() ([]T, error) {
+func (q *QueryBuilder[T]) GetRandom() (*T, error) {
+	return GetEntity[T](q.client, q.endpoint, "random")
+}
+
+func (q *QueryBuilder[T]) GroupBy(field string, includeUnknown bool) *QueryBuilder[T] {
+	q.params.GroupBy = field
+	if includeUnknown {
+		q.params.GroupBy += ":include_unknown"
+	}
+	return q
+}
+
+func (q *QueryBuilder[T]) AutoComplete(query string) *QueryBuilder[model.Completion] {
+	autoCompleteBuilder := &QueryBuilder[model.Completion]{
+		client:   q.client,
+		endpoint: EndPointAutoComplete + q.endpoint,
+		params:   q.params,
+	}
+	autoCompleteBuilder.params.AutoComplete = query
+	return autoCompleteBuilder
+}
+
+func (q *QueryBuilder[T]) List() ([]*T, error) {
 	resp, err := ListEntities[T](q.client, q.endpoint, q.params)
 	if err != nil {
 		return nil, err
 	}
 	return resp.Results, nil
+}
+
+func (q *QueryBuilder[T]) ListGroupBy() ([]*model.GroupBy, error) {
+	resp, err := ListEntities[T](q.client, q.endpoint, q.params)
+	if err != nil {
+		return nil, err
+	}
+	return resp.GroupBy, nil
+}
+
+func (q *QueryBuilder[T]) Cursor(cursor ...string) ([]*T, string, error) {
+	if len(cursor) > 0 {
+		q.params.Cursor = cursor[0]
+	} else {
+		q.params.Cursor = "*"
+	}
+	resp, err := ListEntities[T](q.client, q.endpoint, q.params)
+	if err != nil {
+		return nil, "", err
+	}
+	return resp.Results, resp.Meta.NextCursor, nil
 }
 
 func (q *QueryBuilder[T]) ListWithMeta() (*model.PaginatedResponse[T], error) {

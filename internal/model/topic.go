@@ -1,37 +1,39 @@
 package model
 
 type Topic struct {
-	Description string     `json:"description"`
-	DisplayName string     `json:"display_name"`
-	Domain      TopicField `json:"domain"`
-	Field       TopicField `json:"field"`
-	ID          string     `json:"id"`
-	IDs         struct {
-		OpenAlex  string `json:"openalex"`
-		Wikipedia string `json:"wikipedia"`
-	} `json:"ids"`
-	Keywords   []string   `json:"keywords"`
-	Subfield   TopicField `json:"subfield"`
-	UpdateDate string     `json:"update_date"`
-	WorksCount int        `json:"works_count"`
+	Description string      `json:"description,omitempty"`
+	DisplayName string      `json:"display_name,omitempty"`
+	Domain      *TopicField `json:"domain,omitempty"`
+	Field       *TopicField `json:"field,omitempty"`
+	ID          string      `json:"id,omitempty"`
+	IDs         *TopicIDs   `json:"ids,omitempty"`
+	Keywords    []string    `json:"keywords,omitempty"`
+	Subfield    *TopicField `json:"subfield,omitempty"`
+	UpdateDate  string      `json:"update_date,omitempty"`
+	WorksCount  int         `json:"works_count,omitempty"`
+}
+
+type TopicIDs struct {
+	OpenAlex  string `json:"openalex,omitempty"`
+	Wikipedia string `json:"wikipedia,omitempty"`
 }
 
 type TopicWithCount struct {
 	Topic
-	Count int `json:"count"`
+	Count int `json:"count,omitempty"`
 }
 
 type TopicWithScore struct {
 	Topic
-	Score float32 `json:"score"`
+	Score float32 `json:"score,omitempty"`
 }
 
 type TopicShare struct {
 	Topic
-	Value float64 `json:"value"`
+	Value float64 `json:"value,omitempty"`
 }
 
 type TopicField struct {
-	ID          string `json:"id"`
-	DisplayName string `json:"display_name"`
+	ID          string `json:"id,omitempty"`
+	DisplayName string `json:"display_name,omitempty"`
 }

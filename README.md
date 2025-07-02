@@ -22,11 +22,11 @@ As of now, the library is in its early stages. The following features are planne
 - [x] Pagination support.
 - [x] Filtering and searching.
 - [x] Sorting, selecting and sampling.
-- [ ] Random result.
-- [ ] Grouping support.
-- [ ] N-gram support.
-- [ ] Cursor pagination support.
-- [ ] Autocomplete support.
+- [x] Random result.
+- [x] Grouping support.
+- [x] Cursor pagination support.
+- [x] Autocomplete support.
+- [ ] N-gram support. (Not available in OpenAlex yet.)
 
 All features will be implemented gradually, and contributions are welcome!
 
@@ -42,6 +42,10 @@ go get -u github.com/Sunhill666/goalex
 
 To use the GoAlex library, you need to create a new client. You can do this by calling the `goalex.NewClient()` function. By default, it uses the common pool with a rate limit. Read more about the [OpenAlex rate limits](https://docs.openalex.org/how-to-use-the-api/rate-limits-and-authentication).
 
+<details>
+
+<summary>Click to expand</summary>
+
 ```go
 package main
 
@@ -53,9 +57,15 @@ func main() {
 }
 ```
 
+</details>
+
 #### Polite Pool
 
 To use the polite pool, you need to set an email address. This is required by OpenAlex to allow higher rate limits. You can do this by using the `goalex.PolitePool` function when creating a new client.
+
+<details>
+
+<summary>Click to expand</summary>
 
 ```go
 package main
@@ -68,9 +78,15 @@ func main() {
 }
 ```
 
+</details>
+
 #### Authentication
 
 For OpenAlex premium users, you can use the `goalex.Auth` function to authenticate your client. This will allow you to access premium features and higher rate limits.
+
+<details>
+
+<summary>Click to expand</summary>
 
 ```go
 package main
@@ -83,9 +99,15 @@ func main() {
 }
 ```
 
+</details>
+
 ### Get single entity
 
 You can use the client to fetch a single entity like a work, author, or source. The following example demonstrates how to fetch a work by its ID.
+
+<details>
+
+<summary>Click to expand</summary>
 
 ```go
 package main
@@ -115,9 +137,53 @@ func main() {
 }
 ```
 
+</details>
+
+### Get random entity
+
+You can use the client to fetch a random entity like a work, author, or source. The following example demonstrates how to fetch a random work by using the `GetRandom()` method.
+
+<details>
+
+<summary>Click to expand</summary>
+
+```go
+package main
+
+import (
+    "encoding/json"
+    "fmt"
+
+    "github.com/Sunhill666/goalex"
+)
+
+// Example: Get a single work by ID
+func main() {
+    // Create a new client with polite pool
+    client := goalex.NewClient()
+
+    // Fetch a work by its ID
+    work, err := client.Works().GetRandom()
+    if err != nil {
+        fmt.Printf("Error fetching work: %v\n", err)
+        return
+    }
+
+    // Print the work
+    workJSON, _ := json.MarshalIndent(work, "", "  ")
+    fmt.Println("Work:", string(workJSON))
+}
+```
+
+</details>
+
 ### Get list entities
 
 You can use the client to fetch a list of works, authors, sources, etc. The following example demonstrates how to fetch a list of works using the `Works()` method.
+
+<details>
+
+<summary>Click to expand</summary>
 
 ```go
 package main
@@ -150,9 +216,15 @@ func main() {
 }
 ```
 
+</details>
+
 #### Pagination
 
 You can also paginate the results by using the `Page()` and `PerPage()` methods. By default, the API returns the first page with 25 items per page.
+
+<details>
+
+<summary>Click to expand</summary>
 
 ```go
 package main
@@ -188,9 +260,15 @@ func main() {
 }
 ```
 
+</details>
+
 #### Metadata
 
 The `Works()` method also supports metadata. You can use the `ListWithMeta()` method to get the results along with metadata.
+
+<details>
+
+<summary>Click to expand</summary>
 
 ```go
 package main
@@ -228,6 +306,61 @@ func main() {
 }
 ```
 
+</details>
+
+#### Cursor Pagination
+
+You can use the `Cursor()` method to get the next page of results using cursor pagination. This is useful for large datasets where you want to fetch results in chunks. The following example demonstrates how to use cursor pagination to fetch works.
+
+<details>
+
+<summary>Click to expand</summary>
+
+```go
+package main
+
+import (
+    "encoding/json"
+    "fmt"
+
+    "github.com/Sunhill666/goalex"
+)
+
+func main() {
+    // Create a new client with polite pool
+    client := goalex.NewClient()
+
+    // Get autocomplete suggestions for institutions
+    works, nextCursor, err := client.Works().Filter("publication_year", 2020).PerPage(100).Cursor()
+
+    if err != nil {
+        fmt.Printf("Error fetching completions: %v\n", err)
+        return
+    }
+
+    // Print the works
+    for _, work := range works {
+        workJSON, _ := json.MarshalIndent(work, "", "  ")
+        fmt.Println("Work:", string(workJSON))
+    }
+
+    nextWorks, _, err := client.Works().Filter("publication_year", 2020).PerPage(100).Cursor(nextCursor)
+
+    if err != nil {
+        fmt.Printf("Error fetching next completions: %v\n", err)
+        return
+    }
+
+    // Print the next works
+    for _, work := range nextWorks {
+        workJSON, _ := json.MarshalIndent(work, "", "  ")
+        fmt.Println("Next Work:", string(workJSON))
+    }
+}
+```
+
+</details>
+
 ### Filtering and Searching
 
 The library supports filtering and searching for works, authors, sources, etc.
@@ -235,6 +368,10 @@ The library supports filtering and searching for works, authors, sources, etc.
 #### Filter Example
 
 You can filter works by multiple conditions using the `FilterMap()` method, and filter by a single condition using the `Filter()` method. The following example demonstrates how to filter works by country code and authors count.
+
+<details>
+
+<summary>Click to expand</summary>
 
 ```go
 package main
@@ -284,9 +421,15 @@ func main() {
 }
 ```
 
+</details>
+
 #### Search Example
 
 You can search for works using the `Search()` method. The following example demonstrates how to search for works with a query.
+
+<details>
+
+<summary>Click to expand</summary>
 
 ```go
 package main
@@ -319,9 +462,15 @@ func main() {
 }
 ```
 
+</details>
+
 #### Search Filter
 
-You can also combine search with filtering. The following example demonstrates how to search for works with a query and filter by country code.
+You can also combine search with filtering by using the `SearchFilter()` method. The following example demonstrates how to search for works with a query and filter by country code.
+
+<details>
+
+<summary>Click to expand</summary>
 
 ```go
 package main
@@ -356,6 +505,8 @@ func main() {
 }
 ```
 
+</details>
+
 ### Sorting, Selecting and Sampling
 
 The library supports sorting, selecting, and sampling of works.
@@ -363,6 +514,10 @@ The library supports sorting, selecting, and sampling of works.
 #### Sort Example
 
 You can sort the results by multiple fields using the `SortMap()` method, or by a single field using the `Sort()` method. The following example demonstrates how to sort works by publication year and relevance score.
+
+<details>
+
+<summary>Click to expand</summary>
 
 ```go
 package main
@@ -412,9 +567,15 @@ func main() {
 }
 ```
 
+</details>
+
 #### Select Example
 
 You can select specific fields from the results using the `Select()` method. The following example demonstrates how to select the ID, DOI, and display name of works.
+
+<details>
+
+<summary>Click to expand</summary>
 
 ```go
 package main
@@ -445,9 +606,15 @@ func main() {
 }
 ```
 
+</details>
+
 #### Sample Example
 
 You can sample a specific number of works using the `Sample()` method. And you can also set a seed for reproducibility using the `Seed()` method. The following example demonstrates how to sample 2 works with a seed of 42.
+
+<details>
+
+<summary>Click to expand</summary>
 
 ```go
 package main
@@ -477,6 +644,102 @@ func main() {
     }
 }
 ```
+
+</details>
+
+### Grouping Example
+
+You can group works by a specific field using the `GroupBy()` method. The following example demonstrates how to group works by authorship countries and include unknown countries.
+
+<details>
+
+<summary>Click to expand</summary>
+
+```go
+package main
+
+import (
+    "encoding/json"
+    "fmt"
+
+    "github.com/Sunhill666/goalex"
+)
+
+func main() {
+    // Create a new client with polite pool
+    client := goalex.NewClient()
+
+    // Group works by authorship countries and include unknown
+    groupWorks, err := client.Works().GroupBy("authorships.countries", true).ListGroupBy()
+
+    if err != nil {
+        fmt.Printf("Error fetching works: %v\n", err)
+        return
+    }
+
+    // Print the works
+    for _, work := range groupWorks {
+        workJSON, _ := json.MarshalIndent(work, "", "  ")
+        fmt.Println("Group Work:", string(workJSON))
+    }
+}
+```
+
+</details>
+
+### Autocomplete Example
+
+You can use the `AutoComplete()` method to get autocomplete suggestions for institutions, works, authors, etc. The following example demonstrates how to get autocomplete suggestions for institutions and works.
+
+<details>
+
+<summary>Click to expand</summary>
+
+```go
+package main
+
+import (
+    "encoding/json"
+    "fmt"
+
+    "github.com/Sunhill666/goalex"
+)
+
+func main() {
+    // Create a new client with polite pool
+    client := goalex.NewClient()
+
+    // Get autocomplete suggestions for institutions
+    completions, err := client.Institutions().AutoComplete("flori").List()
+
+    if err != nil {
+        fmt.Printf("Error fetching completions: %v\n", err)
+        return
+    }
+
+    // Print the completions
+    for _, completion := range completions {
+        completionJSON, _ := json.MarshalIndent(completion, "", "  ")
+        fmt.Println("Completion:", string(completionJSON))
+    }
+
+    // Get autocomplete suggestions for works with a specific filter
+    withFilterAndSearch, err := client.Works().Filter("publication_year", 2010).Search("frogs").AutoComplete("greenhouse").List()
+
+    if err != nil {
+        fmt.Printf("Error fetching filtered and searched completions: %v\n", err)
+        return
+    }
+
+    // Print the filtered and searched completions
+    for _, completion := range withFilterAndSearch {
+        completionJSON, _ := json.MarshalIndent(completion, "", "  ")
+        fmt.Println("Completion:", string(completionJSON))
+    }
+}
+```
+
+</details>
 
 ## License
 
