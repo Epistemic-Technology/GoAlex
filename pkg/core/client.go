@@ -148,7 +148,7 @@ func (c *Client) GetWithContext(ctx context.Context, path string, out any) error
 
 		// 检查HTTP状态码
 		if resp.StatusCode >= 400 {
-			resp.Body.Close()
+			_ = resp.Body.Close()
 			if isRetryableStatusCode(resp.StatusCode) && attempt < c.MaxRetries {
 				lastErr = fmt.Errorf("HTTP %d: %s", resp.StatusCode, resp.Status)
 				continue
@@ -156,7 +156,7 @@ func (c *Client) GetWithContext(ctx context.Context, path string, out any) error
 			return fmt.Errorf("HTTP %d: %s", resp.StatusCode, resp.Status)
 		}
 
-		defer resp.Body.Close()
+		defer func() { _ = resp.Body.Close() }()
 		err = json.NewDecoder(resp.Body).Decode(out)
 		if err != nil {
 			return fmt.Errorf("failed to decode response: %w", err)
