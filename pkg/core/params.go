@@ -7,12 +7,14 @@ import (
 	"strings"
 )
 
+// PaginationParams contains parameters for pagination.
 type PaginationParams struct {
 	Page    int
 	PerPage int
 	Cursor  string
 }
 
+// ToQuery converts pagination parameters to URL query values.
 func (p *PaginationParams) ToQuery() url.Values {
 	q := url.Values{}
 	if p.Page > 0 {
@@ -27,6 +29,7 @@ func (p *PaginationParams) ToQuery() url.Values {
 	return q
 }
 
+// QueryParams contains all query parameters for API requests.
 type QueryParams struct {
 	Pagination   *PaginationParams
 	Filter       map[string]any
@@ -40,6 +43,7 @@ type QueryParams struct {
 	Cursor       string
 }
 
+// ToQuery converts all query parameters to URL query values.
 func (q *QueryParams) ToQuery() url.Values {
 	query := url.Values{}
 	if q.Pagination != nil {

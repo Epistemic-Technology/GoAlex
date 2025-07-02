@@ -7,6 +7,7 @@ import (
 	"github.com/Sunhill666/goalex/internal/model"
 )
 
+// ListEntities retrieves a paginated list of entities from the specified endpoint.
 func ListEntities[T any](
 	c *Client,
 	endpoint string,
@@ -29,6 +30,7 @@ func ListEntities[T any](
 	return &resp, nil
 }
 
+// GetEntity retrieves a single entity by ID from the specified endpoint.
 func GetEntity[T any](c *Client, endpoint, id string) (*T, error) {
 	var entity T
 	err := c.Get(fmt.Sprintf("%s/%s", endpoint, id), &entity)
