@@ -52,11 +52,12 @@ type GroupBy struct {
 }
 
 type PaginatedResponseMeta struct {
-	Count       int `json:"count,omitempty"`
-	DBRespTime  int `json:"db_response_time_ms,omitempty"`
-	Page        int `json:"page,omitempty"`
-	PerPage     int `json:"per_page,omitempty"`
-	GroupsCount int `json:"groups_count,omitempty"`
+	Count       int    `json:"count,omitempty"`
+	DBRespTime  int    `json:"db_response_time_ms,omitempty"`
+	Page        int    `json:"page,omitempty"`
+	PerPage     int    `json:"per_page,omitempty"`
+	GroupsCount int    `json:"groups_count,omitempty"`
+	NextCursor  string `json:"next_cursor,omitempty"`
 }
 
 type Role struct {

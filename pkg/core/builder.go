@@ -146,6 +146,19 @@ func (q *QueryBuilder[T]) ListGroupBy() ([]*model.GroupBy, error) {
 	return resp.GroupBy, nil
 }
 
+func (q *QueryBuilder[T]) Cursor(cursor ...string) ([]*T, string, error) {
+	if len(cursor) > 0 {
+		q.params.Cursor = cursor[0]
+	} else {
+		q.params.Cursor = "*"
+	}
+	resp, err := ListEntities[T](q.client, q.endpoint, q.params)
+	if err != nil {
+		return nil, "", err
+	}
+	return resp.Results, resp.Meta.NextCursor, nil
+}
+
 func (q *QueryBuilder[T]) ListWithMeta() (*model.PaginatedResponse[T], error) {
 	return ListEntities[T](q.client, q.endpoint, q.params)
 }

@@ -24,7 +24,7 @@ As of now, the library is in its early stages. The following features are planne
 - [x] Sorting, selecting and sampling.
 - [x] Random result.
 - [x] Grouping support.
-- [ ] Cursor pagination support.
+- [x] Cursor pagination support.
 - [x] Autocomplete support.
 - [ ] N-gram support. (Not available in OpenAlex yet.)
 
@@ -303,6 +303,57 @@ func main() {
     }
     // Print the metadata
     fmt.Printf("Metadata: %+v\n", meta)
+}
+```
+
+#### Cursor Pagination
+
+You can use the `Cursor()` method to get the next page of results using cursor pagination. This is useful for large datasets where you want to fetch results in chunks. The following example demonstrates how to use cursor pagination to fetch works.
+
+<details>
+
+<summary>Click to expand</summary>
+
+```go
+package main
+
+import (
+    "encoding/json"
+    "fmt"
+
+    "github.com/Sunhill666/goalex"
+)
+
+func main() {
+    // Create a new client with polite pool
+    client := goalex.NewClient()
+
+    // Get autocomplete suggestions for institutions
+    works, nextCursor, err := client.Works().Filter("publication_year", 2020).PerPage(100).Cursor()
+
+    if err != nil {
+        fmt.Printf("Error fetching completions: %v\n", err)
+        return
+    }
+
+    // Print the works
+    for _, work := range works {
+        workJSON, _ := json.MarshalIndent(work, "", "  ")
+        fmt.Println("Work:", string(workJSON))
+    }
+
+    nextWorks, _, err := client.Works().Filter("publication_year", 2020).PerPage(100).Cursor(nextCursor)
+
+    if err != nil {
+        fmt.Printf("Error fetching next completions: %v\n", err)
+        return
+    }
+
+    // Print the next works
+    for _, work := range nextWorks {
+        workJSON, _ := json.MarshalIndent(work, "", "  ")
+        fmt.Println("Next Work:", string(workJSON))
+    }
 }
 ```
 

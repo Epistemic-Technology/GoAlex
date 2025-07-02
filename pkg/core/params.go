@@ -37,6 +37,7 @@ type QueryParams struct {
 	Seed         int
 	GroupBy      string
 	AutoComplete string
+	Cursor       string
 }
 
 func (q *QueryParams) ToQuery() url.Values {
@@ -90,6 +91,9 @@ func (q *QueryParams) ToQuery() url.Values {
 	}
 	if q.AutoComplete != "" {
 		query.Set("q", q.AutoComplete)
+	}
+	if q.Cursor != "" {
+		query.Set("cursor", q.Cursor)
 	}
 	return query
 }
