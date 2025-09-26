@@ -2,10 +2,16 @@
 // OpenAlex is a free and open catalog of scholarly papers, authors, venues, and more.
 package goalex
 
-import "github.com/Sunhill666/goalex/pkg/core"
+import (
+	"github.com/Sunhill666/goalex/internal/model"
+	"github.com/Sunhill666/goalex/pkg/core"
+)
 
 // Client represents an HTTP client for interacting with the OpenAlex API.
 type Client = core.Client
+
+// Work represents an individual paper in the OpenAlex API.
+type Work = model.Work
 
 // PolitePool configures the client to use a polite pool with the provided email address.
 var PolitePool = core.PolitePool
